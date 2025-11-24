@@ -6,5 +6,16 @@ POST http://localhost:5000/api/chamado/cadastrar
 Content-Type: application/json
 
 {
-    "descricao": "Trocar memórias"
+    "descricao": "TESTE 6"
 }
+
+### Atualizar
+PUT http://localhost:5000/api/chamado/alterar/5eb94cd6-54d5-40fb-b3ce-e27b8a322e31
+Content-Type: application/json
+
+{
+    "status" : "alterar"
+}
+
+### Chamados em aberto
+GET http://localhost:5000/api/chamado/naoresolvidos

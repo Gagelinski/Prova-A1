@@ -5,9 +5,17 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
 
+builder.Services.AddCors(options =>
+    options.AddPolicy("AcessoTotal",
+        configs => configs
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod())
+);
+
 var app = builder.Build();
 
-app.MapGet("/", () => "COLOQUE O SEU NOME");
+app.MapGet("/", () => "ANNA JÚLIA GAGELINSKI");
 
 //ENDPOINTS DE TAREFA
 //GET: http://localhost:5273/api/chamado/listar
@@ -28,16 +36,28 @@ app.MapPost("/api/chamado/cadastrar", ([FromServices] AppDataContext ctx, [FromB
     return Results.Created("", chamado);
 });
 
-//PUT: http://localhost:5273/chamado/alterar/{id}
-app.MapPut("/api/chamado/alterar/{id}", ([FromServices] AppDataContext ctx, [FromRoute] string id) =>
+//PUT: http://localhost:5273/api/chamado/alterar/{id}
+app.MapPut("/api/chamado/alterar/{id}", ([FromServices] AppDataContext ctx, [FromRoute] string id, [FromBody] Chamado chamadoAlterado) =>
 {
-    //Implementar a alteração do status do chamado
+    var chamado = ctx.Chamados.Find(id);
+    if (chamado == null) return Results.NotFound();
+
+    if (chamado.Status == "Aberto")
+    {
+        chamado.Status = "Em atendimento";
+
+    }else
+    {
+        chamado.Status = "Resolvido";
+    }
+    
+    ctx.SaveChanges();
+    return Results.Ok(chamado);
 });
 
 //GET: http://localhost:5273/chamado/naoconcluidas
-app.MapGet("/api/chamado/naoresolvidos", ([FromServices] AppDataContext ctx) =>
+app.MapGet("/api/chamado/naoresolvidos", ([FromServices] AppDataContext ctx, [FromBody] Chamado chamado ) =>
 {
-    //Implementar a listagem dos chamados não resolvidos
 });
 
 //GET: http://localhost:5273/chamado/concluidas
@@ -46,4 +66,5 @@ app.MapGet("/api/chamado/resolvidos", ([FromServices] AppDataContext ctx) =>
     //Implementar a listagem dos chamados resolvidos
 });
 
+app.UseCors("AcessoTotal");
 app.Run();
