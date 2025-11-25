@@ -19,3 +19,6 @@ Content-Type: application/json
 
 ### Chamados em aberto
 GET http://localhost:5000/api/chamado/naoresolvidos
+
+###Buscar
+GET http://localhost:5000/api/chamado/buscar/5eb94cd6-54d5-40fb-b3ce-e27b8a322e31

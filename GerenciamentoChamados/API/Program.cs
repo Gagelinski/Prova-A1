@@ -36,6 +36,17 @@ app.MapPost("/api/chamado/cadastrar", ([FromServices] AppDataContext ctx, [FromB
     return Results.Created("", chamado);
 });
 
+//BUSCAR
+app.MapGet("/api/chamado/buscar/{id}", ([FromRoute] string id, [FromServices] AppDataContext ctx) =>
+{
+    var chamado = ctx.Chamados.FirstOrDefault(x => x.ChamadoId == id);
+
+    if (chamado is null)
+        return Results.NotFound("Chamado não encontrado");
+
+    return Results.Ok(chamado);
+});
+
 //PUT: http://localhost:5273/api/chamado/alterar/{id}
 app.MapPut("/api/chamado/alterar/{id}", ([FromServices] AppDataContext ctx, [FromRoute] string id, [FromBody] Chamado chamadoAlterado) =>
 {
